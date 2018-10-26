@@ -2,7 +2,7 @@ Spree::Variant.class_eval do
 
   has_many :sale_prices, through: :prices
 
-  delegate_belongs_to :default_price, :sale_price, :original_price, :on_sale?, :discount_percent
+  delegate_missing_to :price
 
   def put_on_sale(value, params = {})
     currencies = params.fetch(:currencies, [])
@@ -28,11 +28,11 @@ Spree::Variant.class_eval do
   def sale_price_in(currency)
     Spree::Price.new variant_id: self.id, currency: currency, amount: price_in(currency).sale_price
   end
-  
+
   def discount_percent_in(currency)
     price_in(currency).discount_percent
   end
-  
+
   def on_sale_in?(currency)
     price_in(currency).on_sale?
   end
@@ -56,7 +56,7 @@ Spree::Variant.class_eval do
   def stop_sale(currencies = nil)
     run_on_prices(currencies) { |p| p.stop_sale }
   end
-  
+
   private
     # runs on all prices or on the ones with the currencies you've specified
     def run_on_prices(currencies = nil, &block)

@@ -47,17 +47,20 @@ Spree::Price.class_eval do
   end
 
   def on_sale?
+    Rails.logger.info sale_prices
+    Rails.logger.info sale_prices.active.present?
+    Rails.logger.info first_sale(sale_prices.active).value < original_price
     sale_prices.active.present? && first_sale(sale_prices.active).value < original_price
   end
 
   def original_price
     self[:amount]
   end
-  
+
   def original_price=(value)
     self[:amount] = Spree::LocalizedNumber.parse(value)
   end
-  
+
   def price
     on_sale? ? sale_price : original_price
   end
@@ -69,7 +72,7 @@ Spree::Price.class_eval do
       self[:amount] = Spree::LocalizedNumber.parse(price)
     end
   end
-  
+
   def amount
     price
   end

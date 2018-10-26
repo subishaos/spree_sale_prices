@@ -2,7 +2,8 @@ module Spree
   class SalePrice < ActiveRecord::Base
 
     belongs_to :price, class_name: "Spree::Price"
-    delegate_belongs_to :price, :currency
+    delegate_missing_to :price
+    delegate_missing_to :currency
 
     has_one :variant, through: :price
 
